@@ -67,7 +67,7 @@ document.getElementById("salaForm").addEventListener("submit", function (event) 
           .then(() => {
             document.getElementById("resultado").textContent = "✅ Sala registrada com sucesso!";
             document.getElementById("salaForm").reset();
-            carregarSalas(); // Atualiza tabela após salvar
+            carregarSalas(); 
           })
           .catch(error => {
             console.error("Erro ao salvar:", error);
@@ -79,23 +79,31 @@ document.getElementById("salaForm").addEventListener("submit", function (event) 
 
 // Função para carregar os dados do Firebase e mostrar na tabela
 function carregarSalas() {
-  const tabela = document.querySelector("#tabelaSalas tbody");
-  tabela.innerHTML = ""; // Limpa tabela antes de preencher
+  const tabelaAndamento = document.querySelector("#tabelaAndamento tbody");
+  const tabelaInicio = document.querySelector("#tabelaInicio tbody");
+
+  tabelaAndamento.innerHTML = "";
+  tabelaInicio.innerHTML = "";
 
   database.ref("salas").once("value").then(snapshot => {
     snapshot.forEach(child => {
       const dados = child.val();
 
-      // Converte as datas para o formato DD/MM/AAAA
+      function formatarDataIsoParaPtBr(isoDateStr) {
+        const [ano, mes, dia] = isoDateStr.split("-");
+        return `${dia}/${mes}/${ano}`;
+      }
+      
       const inicioFormatado = dados.periodoInicio
-        ? new Date(dados.periodoInicio).toLocaleDateString("pt-BR")
+        ? formatarDataIsoParaPtBr(dados.periodoInicio)
         : "";
+      
       const fimFormatado = dados.periodoFim
-        ? new Date(dados.periodoFim).toLocaleDateString("pt-BR")
+        ? formatarDataIsoParaPtBr(dados.periodoFim)
         : "";
 
+        
       const linha = document.createElement("tr");
-
       linha.innerHTML = `
         <td>${dados.curso}</td>
         <td>${inicioFormatado}</td>
@@ -103,11 +111,14 @@ function carregarSalas() {
         <td>${dados.professor}</td>
         <td>${dados.sala}</td>
       `;
-
-      tabela.appendChild(linha);
+      
+      if (!dados.periodoFim || dados.periodoFim.trim() === "") {
+        tabelaInicio.appendChild(linha);
+      } else {
+        tabelaAndamento.appendChild(linha);
+      }
     });
   });
 }
 
-// Carrega os dados ao abrir a página
 window.addEventListener("DOMContentLoaded", carregarSalas);
