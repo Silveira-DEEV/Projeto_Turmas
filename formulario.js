@@ -163,7 +163,11 @@ function carregarSalas() {
           <td>${fimFormatado}</td>
           <td>${dados.professor}</td>
           <td>${dados.sala}</td>
-          <td><button class="excluir-btn" onclick="excluirSala('${dados.key}')">Excluir</button></td>
+          <td>
+          <button class="excluir-btn" onclick="excluirSala('${dados.key}')">Excluir</button> 
+          <button class="editar-btn" style="margin-top: 7px; onclick="editarSala(this, '${dados.key}')">Editar</button>
+          
+
         `;
 
         if (!dados.periodoFim || dados.periodoFim.trim() === "") {
@@ -175,6 +179,54 @@ function carregarSalas() {
     });
 }
 
+
+function editarSala(botaoEditar, salaId) {
+  const linha = botaoEditar.closest("tr");
+
+
+  if (botaoEditar.textContent === "Editar") {
+    for (let i = 0; i < 5; i++) {
+      const cell = linha.cells[i];
+      const valorAtual = cell.textContent;
+      const input = document.createElement("input");
+      input.value = valorAtual;
+      input.style.width = "100%";
+      cell.innerHTML = "";
+      cell.appendChild(input);
+    }
+
+
+    botaoEditar.textContent = "Salvar";
+  } else {
+    const novosDados = {
+      curso: linha.cells[0].querySelector("input").value.trim(),
+      periodoInicio: formatarDataPtBrParaIso(linha.cells[1].querySelector("input").value),
+      periodoFim: formatarDataPtBrParaIso(linha.cells[2].querySelector("input").value),
+      professor: linha.cells[3].querySelector("input").value.trim(),
+      sala: linha.cells[4].querySelector("input").value.trim(),
+    };
+
+
+    firebase
+      .database()
+      .ref("salas/" + salaId)
+      .update(novosDados)
+      .then(() => {
+        console.log("Sala atualizada com sucesso!");
+        carregarSalas();
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar sala: ", error);
+      });
+
+
+    botaoEditar.textContent = "Editar";
+  }
+}
+function formatarDataPtBrParaIso(dataBr) {
+  const [dia, mes, ano] = dataBr.split("/");
+  return `${ano}-${mes}-${dia}`;
+}
 function excluirSala(salaId) {
   const db = firebase.database();
   const salaRef = db.ref("salas/" + salaId);
@@ -182,11 +234,16 @@ function excluirSala(salaId) {
     .remove()
     .then(() => {
       console.log("Sala excluída com sucesso!");
-      carregarSalas(); 
+      carregarSalas();
     })
     .catch((error) => {
       console.error("Erro ao excluir a sala: ", error);
     });
 }
-
 window.addEventListener("DOMContentLoaded", carregarSalas);
+
+document.getElementById('botaoexibicao').addEventListener('click', function() {
+  window.location.href = 'exibicao.html'; // Redireciona para exibicao.html
+});
+
+

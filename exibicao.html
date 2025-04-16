@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exibição</title>
+    <link rel="stylesheet" href="./exibicao.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+        <img src="./images/SENAI_logo_2024.png" alt="">
+        <button class="btn btn-primary" id="botaoexibicao" type="submit">Voltar</button>
+        <button class="btn btn-primary" id="botaopausar" type="submit">Pausar Exibição</button>
+    </header>
+    <section>
+        <div class="tabela-container">
+            <h2>Cursos em Andamento</h2>
+            <table id="tabelaAndamento">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Período de Início</th>
+                  <th>Período de Término</th>
+                  <th>Professor</th>
+                  <th>Sala</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+    </section>
+    
+
+    <script type="module" src="exibicao.js"></script>
+  </body>
+</html>
