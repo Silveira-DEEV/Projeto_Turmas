@@ -126,3 +126,14 @@ botaopausar.addEventListener("click", function () {
     botaopausar.textContent = "Retomar Exibição";
   }
 });
+  function exportarTabela() {
+    const tabela = document.getElementById("tabelaAndamento");
+    const html = tabela.outerHTML;
+    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'cursos_em_andamento.xls';
+    link.click();
+  }
+
